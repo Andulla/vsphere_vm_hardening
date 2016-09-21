@@ -43,18 +43,15 @@
 # Copyright 2016 Your name here, unless otherwise noted.
 #
 
-class vsphere_vm_hardening {
+class vsphere_vm_hardening (
   $virtualmachines   = ['vm1.puppet.com', 'vm2.puppet.com'],
-  $hardening_config  = { 'isolation.tools.copy.disable' => true , 'isolation.tools.paste.disable' => true },
+  $hardening_config  = { 'isolation.tools.copy.disable' => 'true' , 'isolation.tools.paste.disable' => 'true' },
   $vmlocation        = '/datacenter/vm/folder/subfolder/',
   ){
   validate_hash($hardening_config)
-  $allconfigs =  join(join_keys_to_values($hardening_config, "' => '"), "' , '")
-  $finalconfig = "'${allconfigs}'"
-  notice ($finalconfig)
   $virtualmachines.each |String $vm| {
     vsphere_vm { "${vmlocation}${vm}":
-      extra_config => $finalconfig,
+      extra_config => $hardening_config,
     }
   }
 }
