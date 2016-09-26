@@ -14,70 +14,111 @@
 
 ## Description
 
-Start with a one- or two-sentence summary of what the module does and/or what
-problem it solves. This is your 30-second elevator pitch for your module.
-Consider including OS/Puppet version it works with.
+This module helps you to enforce the configure of VMware vSphere VM specific hardening advanced configurations available inside the VMware vSphere Hardening Guide for vSphere 6.
 
-You can give more descriptive information in a second paragraph. This paragraph
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?" If your module has a range of functionality (installation, configuration,
-management, etc.), this is the time to mention it.
+https://www.vmware.com/security/hardening-guides.html.
 
 ## Setup
 
-### What vsphere_vm_hardening affects **OPTIONAL**
+### What vsphere_vm_hardening affects
 
-If it's obvious what your module touches, you can skip this section. For
-example, folks can probably figure out that your mysql_instance module affects
-their MySQL instances.
+This module can be used to update any advanced parameter of your virtual machines, even if they are not mentioned inside the vSphere Hardening Guide. The following is a list of advanced parameters tested with this module:
 
-If there's more that they should know about, though, this is the place to mention:
+* isolation.tools.copy.disable
+* isolation.tools.dnd.disable
+* isolation.tools.setGUIOptions.enable
+* isolation.tools.paste.disable
+* isolation.tools.diskShrink.disable
+* isolation.tools.diskWiper.disable
+* isolation.tools.hgfsServerSet.disable
+* scsiX:Y.mode
+* isolation.tools.ghi.autologon.disable
+* isolation.bios.bbs.disable
+* isolation.tools.getCreds.disable
+* isolation.tools.ghi.launchmenu.change
+* isolation.tools.memSchedFakeSampleStats.disable
+* isolation.tools.ghi.protocolhandler.info.disable
+* isolation.ghi.host.shellAction.disable
+* isolation.tools.dispTopoRequest.disable
+* isolation.tools.trashFolderState.disable
+* isolation.tools.ghi.trayicon.disable
+* isolation.tools.unity.disable
+* isolation.tools.unityInterlockOperation.disable
+* isolation.tools.unity.push.update.disable
+* isolation.tools.unity.taskbar.disable
+* isolation.tools.unityActive.disable
+* isolation.tools.unity.windowContents.disable
+* isolation.tools.vmxDnDVersionGet.disable
+* isolation.tools.guestDnDVersionSet.disable
+* isolation.tools.vixMessage.disable
+* isolation.tools.autoInstall.disable
+* floppyX.present
+* parallelX.present
+* serialX.present
+* tools.setInfo.sizeLimit
+* isolation.device.connectable.disable
+* isolation.device.edit.disable
+* tools.guestlib.enableHostInfo
+* sched.mem.pshare.salt
+* log.keepOld
+* log.rotateSize
+* RemoteDisplay.maxConnections
+* RemoteDisplay.vnc.enabled
 
-* A list of files, packages, services, or operations that the module will alter,
-  impact, or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
+Please take a look at the current vSphere Hardening Guide to get the description of each configuration parameter
 
-### Setup Requirements **OPTIONAL**
+### Setup Requirements
 
-If your module requires anything extra before setting up (pluginsync enabled,
-etc.), mention it here.
-
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you might want to include an additional "Upgrading" section
-here.
-
-### Beginning with vsphere_vm_hardening
-
-The very basic steps needed for a user to get the module up and running. This
-can include setup steps, if necessary, or it can be an example of the most
-basic use of the module.
+The module requires the PuppetLabs vSphere module which is only available for Puppet Enterprise.
 
 ## Usage
 
-This section is where you describe how to customize, configure, and do the
-fancy stuff with your module here. It's especially helpful if you include usage
-examples and code samples for doing things with your module.
+At a minimum, you need to include the vsphere_vm_hardening class.
+
+```puppet
+class { 'vsphere_vm_hardening': }
+```
+
+#### Parameters
+* `virtualmachines`: Array with name of the vSphere virtual machines that should be managed.
+* `hardening_config`: A hash of all the advanced hardening configurations that should be enforced to the advanced configurations.
+* `vmlocation`: Folder location of the VMs that will be managed inside your VMware vSphere Templates and Virtual Machines view.
+
+_Example in Class_:
+
+```puppet
+  class {vsphere_vm_hardening:
+    virtualmachines  => ["myvm1",["myvm2"]],
+    hardening_config => { 'isolation.tools.copy.disable' => 'true' , 'isolation.tools.paste.disable' => 'true' },
+    vmlocation => '/mydatacenter/vm/myfolder/mysubfolder/',
+  }
+```
+I recommend using Hiera to specify all the parameters necessary for the vsphere_vm_hardening class
+
+_Example in Hiera_:
+
+```yaml
+vsphere_vm_hardening::vmlocation: '/mydatacenter/vm/myfolder/mysubfolder/'
+vsphere_vm_hardening::hardening_config:
+    isolation.tools.copy.disable: 'true'
+    isolation.tools.paste.disable: 'true'
+vsphere_vm_hardening::virtualmachines:
+ - myvm1
+ - myvm2
+```
 
 ## Reference
 
-Here, include a complete list of your module's classes, types, providers,
-facts, along with the parameters for each. Users refer to this section (thus
-the name "Reference") to find specific details; most users don't read it per
-se.
+The vsphere_vm_hardening module is using the vsphere_vm resource type from the puppetlabs vsphere module
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc. If there
-are Known Issues, you might want to include them under their own heading here.
+This module was tested inside a vSphere 5.5 environment. As the API used to configure the advanced parameters didn't change with vSphere 6 it should also work.
 
 ## Development
 
-Since your module is awesome, other users will want to play with it. Let them
-know what the ground rules for contributing are.
+Feel free to send me pull requests if you want to update/include something else.
 
-## Release Notes/Contributors/Etc. **Optional**
+## Release Notes/Contributors/Etc.
 
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You can also add any additional sections you feel
-are necessary or important to include here. Please use the `## ` header.
+This is the first version of the module. Please use it with caution!
