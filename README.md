@@ -80,17 +80,15 @@ class { 'vsphere_vm_hardening': }
 ```
 
 #### Parameters
-* `virtualmachines`: Array with name of the vSphere virtual machines that should be managed.
+* `virtualmachines`: Array with name of the vSphere virtual machines that should be managed including the vmlocation.
 * `hardening_config`: A hash of all the advanced hardening configurations that should be enforced to the advanced configurations.
-* `vmlocation`: Folder location of the VMs that will be managed inside your VMware vSphere Templates and Virtual Machines view.
 
 _Example in Class_:
 
 ```puppet
   class {vsphere_vm_hardening:
-    virtualmachines  => ["myvm1",["myvm2"]],
+    virtualmachines  => ["/mydatacenter/vm/myfolder/mysubfolder/myvm1",["/mydatacenter/vm/myfolder/mysubfolder2/myvm2"]],
     hardening_config => { 'isolation.tools.copy.disable' => 'true' , 'isolation.tools.paste.disable' => 'true' },
-    vmlocation => '/mydatacenter/vm/myfolder/mysubfolder/',
   }
 ```
 I recommend using Hiera to specify all the parameters necessary for the vsphere_vm_hardening class
@@ -98,13 +96,12 @@ I recommend using Hiera to specify all the parameters necessary for the vsphere_
 _Example in Hiera_:
 
 ```yaml
-vsphere_vm_hardening::vmlocation: '/mydatacenter/vm/myfolder/mysubfolder/'
+vsphere_vm_hardening::virtualmachines:
+ - /mydatacenter/vm/myfolder/mysubfolder/myvm1
+ - /mydatacenter/vm/myfolder/mysubfolder/myvm2
 vsphere_vm_hardening::hardening_config:
     isolation.tools.copy.disable: 'true'
     isolation.tools.paste.disable: 'true'
-vsphere_vm_hardening::virtualmachines:
- - myvm1
- - myvm2
 ```
 
 ## Reference
