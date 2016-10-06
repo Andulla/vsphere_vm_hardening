@@ -1,6 +1,6 @@
 {
   "name": "andulla-vsphere_vm_hardening",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "andulla",
   "summary": "puppet module for VMware vSphere vm hardening based on official VMware vSphere Hardening Guide for vSphere 6",
   "license": "Apache-2.0",
@@ -12,4 +12,3 @@
   ],
   "data_provider": null
 }
-

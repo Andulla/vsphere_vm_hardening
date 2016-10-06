@@ -87,7 +87,7 @@ _Example in Class_:
 
 ```puppet
   class {vsphere_vm_hardening:
-    virtualmachines  => ["/mydatacenter/vm/myfolder/mysubfolder/myvm1",["/mydatacenter/vm/myfolder/mysubfolder2/myvm2"]],
+    virtualmachines  => ["/mydatacenter/vm/myfolder/mysubfolder/myvm1", "/mydatacenter/vm/myfolder/mysubfolder2/myvm2"],
     hardening_config => { 'isolation.tools.copy.disable' => 'true' , 'isolation.tools.paste.disable' => 'true' },
   }
 ```
